@@ -1,42 +1,44 @@
 import React, { Component } from "react";
 import "./App.css";
 import Person from "./Person/Person";
-
-
+import uuidv4 from "uuid/v4"
 
 // class-based component (stateful component). Don't use if not necessary
 class App extends Component {
   state = {
     persons: [
-      { name: "Andi", age: 23 },
-      { name: "Peter", age: 25 },
-      { name: "John", age: 27 },
-      { name: "Moni", age: 21 }
+      { id: uuidv4(), name: "Andi", age: 23 },
+      { id: uuidv4(), name: "Peter", age: 25 },
+      { id: uuidv4(), name: "John", age: 27 },
+      { id: uuidv4(), name: "Moni", age: 21 }
     ],
+    otherState: 'some other value',
     showPersons: false
   };
 
-  switchNameHandler = name => {
-    // DON'T do this: this.state.persons[0].name="Andreas";
-    this.setState({
-      persons: [
-        { name: name, age: 23 },
-        { name: "Peter", age: 25 },
-        { name: "John", age: 27 },
-        { name: "Moni", age: 22 }
-      ]
+  nameChangedHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
     });
+
+    // with {...xxx} create a new object and spread all the properties of the old object
+    const person = {...this.state.persons[personIndex]};
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
+    this.setState( {persons: persons} );
   };
 
-  nameChangedHandler = event => {
-    this.setState({
-      persons: [
-        { name: "Andi", age: 23 },
-        { name: event.target.value, age: 25 },
-        { name: "John", age: 27 },
-        { name: "Moni", age: 22 }
-      ]
-    });
+  deletePersonHandler = personIndex => {
+    let { persons } = this.state;
+
+    //Note: Always update the state in an immutable fashion. So no state mangling outside setState. Create copy of the state props
+    //create a copy of persons
+    persons = persons.slice();
+    persons.splice(personIndex, 1);
+    this.setState({ persons: persons });
   };
 
   // Basically this is the same as creating a normal method (togglePersonHandler(){}).
@@ -47,7 +49,7 @@ class App extends Component {
 
     // Inside the method call: This is a deconstructing thingy. Acutally you are asked to set the state, however here you set the property showPersons of the state
     // because of the curly braces
-    this.setState({showPersons: !doesShow})
+    this.setState({ showPersons: !doesShow });
   };
 
   // use .bind() to pass parameters to a handler
@@ -64,6 +66,31 @@ class App extends Component {
 
     const { persons } = this.state;
 
+    let personJsx = null;
+
+    if (this.state.showPersons) {
+      personJsx = (
+        <div>
+          {// map creates single entries from an array and executes a function for each element.
+          persons.map((person, index) => {
+            return (
+              <Person
+                name={person.name}
+                age={person.age}
+                // use the arrow function here to have no problem with this keyword.
+                // Alternative: this.deletePersonHandler().bind(this, index)
+                click={() => this.deletePersonHandler(index)}
+                // Add a key to tell react, which components to rerender if the list is mutated. If no key is given, the whole list is rerendered.
+                // Key needs to be unique
+                key={person.id}
+                changed={(event) => this.nameChangedHandler(event, person.id)}
+              />
+            );
+          })}
+        </div>
+      );
+    }
+
     return (
       <div className="App">
         <p className="App-intro">
@@ -75,24 +102,7 @@ class App extends Component {
         <button type="submit" onClick={this.togglePersonsHandler} style={style}>
           Hide/Unhide cards
         </button>
-        {this.state.showPersons ? (
-          <div>
-            <Person
-              name={persons[0].name}
-              years={persons[0].age}
-              click={() => this.switchNameHandler("Andi!?!")}
-            />
-            <Person
-              name={persons[1].name}
-              years={persons[1].age}
-              changed={this.nameChangedHandler}
-            />
-            <Person name={persons[2].name} years={persons[2].age}>
-              Nice children!
-            </Person>
-            <Person name={persons[3].name} years={persons[3].age} />
-          </div>
-        ) : null}
+        {personJsx}
       </div>
     );
   }
