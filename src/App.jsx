@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./App.css";
+import "./App.css"
 import Person from "./Person/Person";
 import uuidv4 from "uuid/v4";
 
