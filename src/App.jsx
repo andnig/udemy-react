@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import Person from "./Person/Person";
-import uuidv4 from "uuid/v4"
+import uuidv4 from "uuid/v4";
 
 // class-based component (stateful component). Don't use if not necessary
 class App extends Component {
