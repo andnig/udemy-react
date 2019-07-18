@@ -93,8 +93,21 @@ class App extends Component {
       style.backgroundColor = "red";
     }
 
+    const classes = [];
+
+    if (this.state.persons.length <= 2)
+    {
+      classes.push('red');
+    }
+    if (this.state.persons.length <= 1) {
+      classes.push('bold');
+    }
+    
     return (
       <div className="App">
+        <p className={classes.join(' ')}>
+          This is a test paragraph.
+        </p>
         <p className="App-intro">
           Hello. To get started, edit
           <code>src/App.js</code>
