@@ -55,18 +55,8 @@ class App extends Component {
   // use .bind() to pass parameters to a handler
   // alternative: "use () => functionCall(param)" (but bind is more optimized)
   render() {
-    // inline css styling
-    const style = {
-      backgroundColor: "green",
-      color: "white",
-      font: "inherit",
-      border: "1x solid blue",
-      padding: "8px",
-      cursor: "pointer",
-    };
-
     const { persons } = this.state;
-
+    let btnClass = null;
     let personJsx = null;
 
     if (this.state.showPersons) {
@@ -90,11 +80,7 @@ class App extends Component {
           })}
         </div>
       );
-      style.backgroundColor = "red";
-      style[':hover'] = {
-        backgroundColor: 'lightgreen',
-        color: 'black',
-      };
+      btnClass = classes.Red;
     }
 
     const appClasses = [];
@@ -118,9 +104,8 @@ class App extends Component {
           </p>
 
           <button
-            type="submit"
+            className = { btnClass }
             onClick={this.togglePersonsHandler}
-            style={style}
           >
             Hide/Unhide cards
           </button>
@@ -131,4 +116,4 @@ class App extends Component {
 }
 
 // Radium is a higher order component
-export default (App);
+export default App;

@@ -4,7 +4,7 @@ import classes from "./Person.css";
 // functional component: Use as much as possible. Components should be
 // as stateless as possible! So, only a JS-function
 const person = props => {
-
+/* eslint-disable*/
   return (
     // Note: When using class-based components, use this.props
     <div className={classes.Person} onClick={props.click}>
