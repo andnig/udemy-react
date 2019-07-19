@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./App.css";
-import Radium, { StyleRoot } from "radium";
 import Person from "./Person/Person";
 import uuidv4 from "uuid/v4";
 
@@ -64,11 +63,6 @@ class App extends Component {
       border: "1x solid blue",
       padding: "8px",
       cursor: "pointer",
-      // the following is valid because of Radium
-      ':hover':{
-        backgroundColor: 'lightgreen',
-        color: 'black'
-      }
     };
 
     const { persons } = this.state;
@@ -115,7 +109,6 @@ class App extends Component {
 
     return (
       // StyleRoot is a Radium Component, required to parse Radium media queries
-      <StyleRoot>
         <div className="App">
           <p className={classes.join(" ")}>This is a test paragraph.</p>
           <p className="App-intro">
@@ -133,10 +126,9 @@ class App extends Component {
           </button>
           {personJsx}
         </div>
-      </StyleRoot>
     );
   }
 }
 
 // Radium is a higher order component
-export default Radium(App);
+export default (App);
