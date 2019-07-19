@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./App.css";
+import classes from "./App.css";
 import Person from "./Person/Person";
 import uuidv4 from "uuid/v4";
 
@@ -97,20 +97,20 @@ class App extends Component {
       };
     }
 
-    const classes = [];
+    const appClasses = [];
 
     if (this.state.persons.length <= 2)
     {
-      classes.push('red');
+      appClasses.push(classes.red);
     }
     if (this.state.persons.length <= 1) {
-      classes.push("bold");
+      appClasses.push(classes.bold);
     }
 
     return (
       // StyleRoot is a Radium Component, required to parse Radium media queries
-        <div className="App">
-          <p className={classes.join(" ")}>This is a test paragraph.</p>
+        <div className={classes.App}>
+          <p className={appClasses.join(" ")}>This is a test paragraph.</p>
           <p className="App-intro">
             Hello. To get started, edit
             <code>src/App.js</code>
