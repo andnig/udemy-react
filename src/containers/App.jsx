@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import classes from "./App.css";
-import Person from "./Person/Person";
+import Persons from "../components/Persons/Persons";
+import Cockpit from "../components/Cockpit/Cockpit";
+
 import uuidv4 from "uuid/v4";
-import ErrorBoundary from "ErrorBoundary"
+
 // class-based component (stateful component). Don't use if not necessary
 class App extends Component {
   state = {
@@ -55,63 +57,26 @@ class App extends Component {
   // use .bind() to pass parameters to a handler
   // alternative: "use () => functionCall(param)" (but bind is more optimized)
   render() {
-    const { persons } = this.state;
-    let btnClass = null;
     let personJsx = null;
 
     if (this.state.showPersons) {
       personJsx = (
         <div>
-          {// map creates single entries from an array and executes a function for each element.
-          persons.map((person, index) => {
-            return (
-              <ErrorBoundary // Add a key to tell react, which components to rerender if the list is mutated. If no key is given, the whole list is rerendered.
-                  // Key needs to be unique
-                  key={person.id}>
-                <Person
-                  name={person.name}
-                  age={person.age}
-                  // use the arrow function here to have no problem with this keyword.
-                  // Alternative: this.deletePersonHandler().bind(this, index)
-                  click={() => this.deletePersonHandler(index)}                  
-                  changed={(event) => this.nameChangedHandler(event, person.id)}
-                />
-              </ErrorBoundary>
-            );
-          })}
+          <Persons persons={this.state.persons} clicked={this.deletePersonHandler} changed={this.nameChangedHandler}/>
         </div>
       );
-      btnClass = classes.Red;
-    }
-
-    const appClasses = [];
-
-    if (this.state.persons.length <= 2)
-    {
-      appClasses.push(classes.red);
-    }
-    if (this.state.persons.length <= 1) {
-      appClasses.push(classes.bold);
     }
 
     return (
       // StyleRoot is a Radium Component, required to parse Radium media queries
-        <div className={classes.App}>
-          <p className={appClasses.join(" ")}>This is a test paragraph.</p>
-          <p className="App-intro">
-            Hello. To get started, edit
-            <code>src/App.js</code>
-            and save to reload.
-          </p>
-
-          <button
-            className = { btnClass }
-            onClick={this.togglePersonsHandler}
-          >
-            Hide/Unhide cards
-          </button>
-          {personJsx}
-        </div>
+      <div className={classes.App}>
+        <Cockpit
+          showPersons={this.state.showPersons}
+          persons={this.state.persons}
+          clicked={this.togglePersonsHandler}
+        />
+        {personJsx}
+      </div>
     );
   }
 }

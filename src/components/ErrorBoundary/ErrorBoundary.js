@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from "react";
 
 // Any component wrapped with this component does not crash the app in production mode (but still in dev mode)
@@ -7,7 +8,8 @@ class ErrorBoundary extends Component {
     errorMessage: ""
   };
 
-  componentDidCatch = (error, info) => {
+  // eslint-disable-next-line no-unused-vars
+  componentDidCatch = (error, _info) => {
     this.setState({ hasError: true, errorMessage: error });
   };
 
