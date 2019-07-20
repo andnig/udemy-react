@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import classes from "./App.css";
 import Person from "./Person/Person";
 import uuidv4 from "uuid/v4";
-
+import ErrorBoundary from "ErrorBoundary"
 // class-based component (stateful component). Don't use if not necessary
 class App extends Component {
   state = {
@@ -65,17 +65,18 @@ class App extends Component {
           {// map creates single entries from an array and executes a function for each element.
           persons.map((person, index) => {
             return (
-              <Person
-                name={person.name}
-                age={person.age}
-                // use the arrow function here to have no problem with this keyword.
-                // Alternative: this.deletePersonHandler().bind(this, index)
-                click={() => this.deletePersonHandler(index)}
-                // Add a key to tell react, which components to rerender if the list is mutated. If no key is given, the whole list is rerendered.
-                // Key needs to be unique
-                key={person.id}
-                changed={(event) => this.nameChangedHandler(event, person.id)}
-              />
+              <ErrorBoundary // Add a key to tell react, which components to rerender if the list is mutated. If no key is given, the whole list is rerendered.
+                  // Key needs to be unique
+                  key={person.id}>
+                <Person
+                  name={person.name}
+                  age={person.age}
+                  // use the arrow function here to have no problem with this keyword.
+                  // Alternative: this.deletePersonHandler().bind(this, index)
+                  click={() => this.deletePersonHandler(index)}                  
+                  changed={(event) => this.nameChangedHandler(event, person.id)}
+                />
+              </ErrorBoundary>
             );
           })}
         </div>
