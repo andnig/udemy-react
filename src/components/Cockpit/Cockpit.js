@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useEffect } from "react";
 import classes from "./Cockpit.css";
 import PropTypes from 'prop-types';
   
 const cockpit = (props) => {
+
+  // This method basically runs on every update cycle of cockpit component. 
+  // The array parameter tells optionally, when it should be run based on which data changed
+  // If the array is empty, the useEffect is only run on the first time
+    useEffect(() => {
+      // eslint-disable-next-line no-console
+      console.log('Cockpit.js useEffect');
+      return () => {
+        // here some cleanup is done (optional return statement)
+      }
+    }, [])
     const appClasses = [];
     let btnClass = '';
 
@@ -12,11 +23,11 @@ const cockpit = (props) => {
     }
 
 
-    if (props.persons.length <= 2)
+    if (props.personsLength <= 2)
     {
       appClasses.push(classes.red);
     }
-    if (props.persons.length <= 1) {
+    if (props.personsLength <= 1) {
       appClasses.push(classes.bold);
     }
 
@@ -42,8 +53,9 @@ const cockpit = (props) => {
 // Props validation; Used in development mode to catch errors if wrong types are added to props
 cockpit.propTypes = {
     showPersons: PropTypes.bool.isRequired,
-    persons: PropTypes.array.isRequired,
+    personsLength: PropTypes.number.isRequired,
     clicked: PropTypes.func.isRequired,
   }
 
-export default (cockpit);
+  // memo makes sure that it is only rerendered if the inputs (props in our case) changes
+export default React.memo(cockpit);
