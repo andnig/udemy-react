@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import classes from "./App.css";
 import Persons from "../components/Persons/Persons";
 import Cockpit from "../components/Cockpit/Cockpit";
+import WithClass from '../hoc/WithClass';
+import AuthContext from '../context/auth-context';
 
 import uuidv4 from "uuid/v4";
 
@@ -15,7 +17,9 @@ class App extends Component {
       { id: uuidv4(), name: "Moni", age: 21 }
     ],
     otherState: 'some other value',
-    showPersons: false
+    showPersons: false,
+    changeCounter: 0,
+    authenticated: false,
   };
 
   nameChangedHandler = (event, id) => {
@@ -30,7 +34,16 @@ class App extends Component {
     const persons = [...this.state.persons];
     persons[personIndex] = person;
 
-    this.setState( {persons: persons} );
+    // setState does not immediately trigger a rerender, it is scheduled
+    // therefore, if a dependency to the current state is needed, we need to use
+    // prevState syntax, to not rely on the "current state" which might be changed
+    // by another scheduled setState und results in undesired behavior.
+    this.setState((prevState) => {
+      return { 
+        persons: persons,
+        changeCounter: prevState.changeCounter + 1,
+      };
+    });
   };
 
   deletePersonHandler = personIndex => {
@@ -54,6 +67,10 @@ class App extends Component {
     this.setState({ showPersons: !doesShow });
   };
 
+  loginHandler = () => {
+    this.setState({authenticated: true});
+  };
+
   // use .bind() to pass parameters to a handler
   // alternative: "use () => functionCall(param)" (but bind is more optimized)
   render() {
@@ -62,21 +79,33 @@ class App extends Component {
     if (this.state.showPersons) {
       personJsx = (
         <div>
-          <Persons persons={this.state.persons} clicked={this.deletePersonHandler} changed={this.nameChangedHandler}/>
+          <Persons
+            persons={this.state.persons}
+            clicked={this.deletePersonHandler}
+            changed={this.nameChangedHandler}
+            isAuthenticated={this.state.authenticated}
+          />
         </div>
       );
     }
 
     return (
       // StyleRoot is a Radium Component, required to parse Radium media queries
-      <div className={classes.App}>
-        <Cockpit
-          showPersons={this.state.showPersons}
-          personsLength={this.state.persons.length}
-          clicked={this.togglePersonsHandler}
-        />
-        {personJsx}
-      </div>
+      <WithClass classes={classes.App}>
+        <AuthContext.Provider
+          value={{
+            authenticated: this.state.authenticated,
+            login: this.loginHandler
+          }}
+        >
+          <Cockpit
+            showPersons={this.state.showPersons}
+            personsLength={this.state.persons.length}
+            clicked={this.togglePersonsHandler}
+          />
+          {personJsx}
+        </AuthContext.Provider>
+      </WithClass>
     );
   }
 }
